@@ -1,5 +1,5 @@
 # DevOps box
-* A vagrant project with an ubuntu focal box with the tools needed to do DevOps
+* A vagrant project with an ubuntu Hirsute Hippo box with the tools needed to do DevOps
 
 # tools included
 * Terraform
