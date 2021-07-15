@@ -49,12 +49,17 @@ curl -s -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/ska
 sudo install skaffold /usr/local/bin/ \
 && rm skaffold \
 && echo "Skaffold installed"
+
 # kubectl
 
 wget -q "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
 && sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl \
 && rm kubectl \
 && echo "Kubectl installed"
+
+# postman
+sudo snap install postman \
+&& echo "postman installed"
 
 # clean up
 if [ ! ${REDHAT_BASED} ] ; then
