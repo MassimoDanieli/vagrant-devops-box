@@ -1,0 +1,36 @@
+name: Provisioning
+
+# Runs scripts/install.sh in a clean Ubuntu 24.04 container on both
+# architectures the box supports, then runs it again (it must be re-runnable).
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 5 1 * *"   # monthly: catches upstream repositories moving
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  provision:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: ShellCheck
+        run: shellcheck scripts/install.sh
+      - name: Provision twice in ubuntu:24.04
+        run: |
+          docker run --rm -v "$PWD:/box:ro" ubuntu:24.04 bash -euc '
+            apt-get update -qq && apt-get install -y -qq sudo >/dev/null
+            useradd --create-home --shell /bin/bash vagrant
+            bash /box/scripts/install.sh
+            bash /box/scripts/install.sh > /dev/null
+            id vagrant | grep -q docker
+            test -f /home/vagrant/.ssh/mykey
+          '
